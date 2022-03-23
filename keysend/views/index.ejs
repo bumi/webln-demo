@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keysend Guestbook</title>
+    <meta property="og:image" content="<%= url %>/img/logo.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="wordart rainbow">
+      <marquee class="text">Keysend Guestbook</marquee>
+    </div>
+
+    <div class="content">
+      <form id="message-form">
+        Your message:<input type="text" name="message" id="message" />
+        <button>Send</button>
+      </form>
+
+      <hr />
+      <div id="messages"></div>
+      <hr />
+      <img src="img/alby-logo-figure-400.png" />
+    </div>
+
+    <script>
+      window.DESTINATION = "<%= destination %>";
+    </script>
+    <script src="/app.js"></script>
+  </body>
+</html>
