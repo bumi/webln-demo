@@ -37,34 +37,26 @@
 
 
 <script>
-  const invoice = '<%= invoice %>';
-  document.getElementById('unlock-button').addEventListener('click', (event) => {
+  const invoice = '<%= invoice.request %>';
+  document.getElementById('unlock-button').addEventListener('click', async (event) => {
     event.preventDefault();
     event.target.innerHTML = "loading...";
 
     if (window.webln) {
       await webln.enable();
 
-      const payResponse = await webln.sendPayment(invoice.request);
+      const payResponse = await webln.sendPayment(invoice);
 
       document.getElementById("preimage").innerHTML = payResponse.preimage;
 
-      sha256(payResponse.preimage).then((hash) => {
-        if (hash === data.payment_hash) {
-          document.getElementById("success").append("yay, paid -- ");
-        } else {
-          alert("fail");
-        }
-      });
+      document.location = "/authenticated";
+
     } else {
       // Show QR code or similar
       alert("NO webln enabled");
     }
-
-
   });
 
 </script>
 
-<script src="/pay.js"></script>
 </html>
