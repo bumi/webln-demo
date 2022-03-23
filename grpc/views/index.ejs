@@ -24,19 +24,47 @@
         <p>
           <a href="#" id="unlock-button"><b>Unlock &rarr;</b></a>
         </p>
-        <p>
-          <a href="#" id="stream-button"><i>Stream &rarr;</i></a>
-        </p>
         <p id="preimage"></p>
         <p id="payment-hash"></p>
         <p id="payment-request"></p>
         <div id="success"></div>
     </header>
-    <main>
+    <main
     </main>
     <footer>
     </footer>
 </body>
+
+
+<script>
+  const invoice = '<%= invoice %>';
+  document.getElementById('unlock-button').addEventListener('click', (event) => {
+    event.preventDefault();
+    event.target.innerHTML = "loading...";
+
+    if (window.webln) {
+      await webln.enable();
+
+      const payResponse = await webln.sendPayment(invoice.request);
+
+      document.getElementById("preimage").innerHTML = payResponse.preimage;
+
+      sha256(payResponse.preimage).then((hash) => {
+        if (hash === data.payment_hash) {
+          document.getElementById("success").append("yay, paid -- ");
+        } else {
+          alert("fail");
+        }
+      });
+    } else {
+      // Show QR code or similar
+      alert("NO webln enabled");
+    }
+
+
+  });
+
+</script>
 
 <script src="/pay.js"></script>
 </html>

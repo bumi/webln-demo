@@ -1,24 +1,35 @@
 const path = require("path");
-const bodyParser = require("body-parser");
 const express = require("express");
-const cors = require("cors");
-const lnurl = require("lnurl-pay");
-const { parsePaymentRequest } = require("invoices");
-///import { isValidPreimage, requestInvoice } from 'lnurl-pay'
+const lnService = require("ln-service");
 
-const RECIPIENT = "ben@lnurl.com";
-const AMOUNT = 21;
+require("dotenv").config();
+
+const { lnd } = lnService.authenticatedLndGrpc({
+  cert: process.env.LND_CERT,
+  macaroon: process.env.LND_MACAROON,
+  socket: process.env.LND_ADDRESS,
+});
+
+lnService.getIdentity({ lnd }, (error, result) => {
+  console.log(error);
+  console.log(result);
+});
 
 const app = express();
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
-  res.render("index");
+app.get("/", async (req, res) => {
+  const invoice = await lnService.createInvoice({
+    lnd,
+    tokens: 100,
+    description: "bolt.fun rocks",
+  });
+
+  console.log(invoice);
+  res.render("index", { invoice });
 });
 
 app.post("/invoice", async function (req, res) {
